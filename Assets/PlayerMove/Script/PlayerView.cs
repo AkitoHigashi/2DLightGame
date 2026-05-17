@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class PlayerView : MonoBehaviour
 {
     [Header("移動速度")]
@@ -11,28 +12,32 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private GameObject _playerLights;
 
     private Rigidbody2D _rb;
-    private PlayerModel _playerModel;
-    private PlayerPresenter _playerPresenter;
+    private PlayerModel _model;
+    private PlayerPresenter _presenter;
 
-    public Vector2 MoveInput => _moveInput;
-    private Vector2 _moveInput;
-
-    public Vector2 MouseWorldPos => _mouseWorldPos;
     private Vector2 _mouseWorldPos;
 
-    private void Init()
-    {
-
-    }
     private void Awake()
     {
+        Init();
         _rb = GetComponent<Rigidbody2D>();
     }
+
+    /// <summary>
+    /// ModelとPresenterを初期化する
+    /// </summary>
+    private void Init()
+    {
+        _model = new PlayerModel(_moveSpeed, _gravityScale);
+        _presenter = new PlayerPresenter(_model);
+    }
+
     private void Update()
     {
         GetMousePos();
         RotateLightToMouse();
     }
+
     private void FixedUpdate()
     {
         Vector2 dir = _mouseWorldPos - (Vector2)transform.position;
@@ -40,40 +45,28 @@ public class PlayerView : MonoBehaviour
     }
 
     /// <summary>
-    /// 方向を受け取って移動する処理メソッド
+    /// Presenterに方向を渡してRigidbodyに速度を適用する
     /// </summary>
-    /// <param name="direction"></param>
-    private void ApplyMovement(float direction)
+    private void ApplyMovement(float directionX)
     {
-        _rb.linearVelocity = _playerPresenter.MovementProcess(direction, _gravityScale);
+        _rb.linearVelocity = _presenter.GetMovementVelocity(directionX);
     }
+
     /// <summary>
-    /// ライトの向きをマウス位置に合わせる処理メソッド
+    /// ライトをマウス方向に向ける
     /// </summary>
     private void RotateLightToMouse()
     {
         _playerLights.transform.up = _mouseWorldPos - (Vector2)transform.position;
     }
+
     /// <summary>
-    /// マウスの位置を取得する処理メソッド
+    /// マウスのワールド座標を毎フレーム取得する
     /// </summary>
     private void GetMousePos()
     {
-        _mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-    }
-
-    /// <summary>/// キャラ移動用のUnityEvent登録メソッド/// </summary>
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        _moveInput = context.ReadValue<Vector2>();
-        Debug.Log($"移動値: {_moveInput}");
-    }
-    // <summary>/// マウス位置取得用のUnityEvent登録メソッド/// </summary>
-    public void OnMousePos(InputAction.CallbackContext context)
-    {
-        //スクリーン座標のマウス位置
-        var screenPos = context.ReadValue<Vector2>();
-        _mouseWorldPos = Camera.main.ScreenToWorldPoint(screenPos);
-        //Debug.Log($"マウス位置: {_currentMousePos}");
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+        _mouseWorldPos = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
     }
 }
