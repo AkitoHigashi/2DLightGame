@@ -10,12 +10,4 @@ public class PlayerModel
         MoveSpeed = moveSpeed;
         GravityScale = gravityScale;
     }
-
-    /// <summary>
-    /// 移動速度ベクトルを計算して返す
-    /// </summary>
-    public Vector2 CalcMovementVelocity(float directionX)
-    {
-        return MoveSpeed * new Vector2(directionX, -GravityScale);
-    }
 }
