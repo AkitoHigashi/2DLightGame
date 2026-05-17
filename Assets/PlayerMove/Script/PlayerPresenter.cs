@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 public class PlayerPresenter
 {
-    private PlayerModel _model;
+    private PlayerModel _playemodel;
 
     public PlayerPresenter(PlayerModel model)
     {
-        _model = model;
+        _playemodel = model;
     }
 
     /// <summary>
@@ -13,6 +13,6 @@ public class PlayerPresenter
     /// </summary>
     public Vector2 GetMovementVelocity(float directionX)
     {
-        return _model.MoveSpeed * new Vector2(directionX, -_model.GravityScale);
+        return _playemodel.MoveSpeed * new Vector2(directionX, -_playemodel.GravityScale);
     }
 }

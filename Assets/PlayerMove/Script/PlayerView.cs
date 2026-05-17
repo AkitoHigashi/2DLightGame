@@ -12,8 +12,8 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private GameObject _playerLights;
 
     private Rigidbody2D _rb;
-    private PlayerModel _model;
-    private PlayerPresenter _presenter;
+    private PlayerModel _playerModel;
+    private PlayerPresenter _playerPresenter;
 
     private Vector2 _mouseWorldPos;
 
@@ -28,8 +28,8 @@ public class PlayerView : MonoBehaviour
     /// </summary>
     private void Init()
     {
-        _model = new PlayerModel(_moveSpeed, _gravityScale);
-        _presenter = new PlayerPresenter(_model);
+        _playerModel = new PlayerModel(_moveSpeed, _gravityScale);
+        _playerPresenter = new PlayerPresenter(_playerModel);
     }
 
     private void Update()
@@ -49,7 +49,7 @@ public class PlayerView : MonoBehaviour
     /// </summary>
     private void ApplyMovement(float directionX)
     {
-        _rb.linearVelocity = _presenter.GetMovementVelocity(directionX);
+        _rb.linearVelocity = _playerPresenter.GetMovementVelocity(directionX);
     }
 
     /// <summary>
