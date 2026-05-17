@@ -31,7 +31,7 @@ public class PlayerView : MonoBehaviour
     /// </summary>
     private void Init()
     {
-        _playerModel = new PlayerModel(_moveSpeed, _gravityScale);
+        _playerModel = new PlayerModel(_moveSpeed, _gravityScale, _lightRotateThreshold);
         _playerPresenter = new PlayerPresenter(_playerModel);
     }
 
@@ -43,25 +43,26 @@ public class PlayerView : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 dir = _mouseWorldPos - (Vector2)transform.position;
-        ApplyMovement(dir.normalized.x);
+        ApplyMovement();
     }
 
     /// <summary>
-    /// Presenterに方向を渡してRigidbodyに速度を適用する
+    /// Presenterから速度を取得してRigidbodyに適用する
     /// </summary>
-    private void ApplyMovement(float directionX)
+    private void ApplyMovement()
     {
-        _rb.linearVelocity = _playerPresenter.GetMovementVelocity(directionX);
+        _rb.linearVelocity = _playerPresenter.GetMovementVelocity(
+            _playerPresenter.GetMovementDirectionX(_mouseWorldPos, transform.position)
+        );
     }
 
     /// <summary>
-    /// ライトをマウス方向に向ける（閾値以下の距離では更新しない）
+    /// Presenterから方向を取得してライトを向ける
     /// </summary>
     private void RotateLightToMouse()
     {
-        Vector2 dir = _mouseWorldPos - (Vector2)transform.position;
-        if (dir.magnitude < _lightRotateThreshold) return;
+        Vector2 dir = _playerPresenter.GetLightDirection(_mouseWorldPos, transform.position);
+        if (dir == Vector2.zero) return;
         _playerLights.transform.up = dir;
     }
 
