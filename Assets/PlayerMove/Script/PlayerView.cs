@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerView : MonoBehaviour
@@ -10,6 +10,9 @@ public class PlayerView : MonoBehaviour
 
     [Header("ライトオブジェクト")]
     [SerializeField] private GameObject _playerLights;
+
+    [Header("ライト回転の最小距離")]
+    [SerializeField] private float _lightRotateThreshold = 0.1f;
 
     private Rigidbody2D _rb;
     private PlayerModel _playerModel;
@@ -53,11 +56,13 @@ public class PlayerView : MonoBehaviour
     }
 
     /// <summary>
-    /// ライトをマウス方向に向ける
+    /// ライトをマウス方向に向ける（閾値以下の距離では更新しない）
     /// </summary>
     private void RotateLightToMouse()
     {
-        _playerLights.transform.up = _mouseWorldPos - (Vector2)transform.position;
+        Vector2 dir = _mouseWorldPos - (Vector2)transform.position;
+        if (dir.magnitude < _lightRotateThreshold) return;
+        _playerLights.transform.up = dir;
     }
 
     /// <summary>
