@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerModel
 {
@@ -9,5 +9,13 @@ public class PlayerModel
     {
         MoveSpeed = moveSpeed;
         GravityScale = gravityScale;
+    }
+
+    /// <summary>
+    /// X方向入力から移動速度ベクトルを計算する
+    /// </summary>
+    public Vector2 CalcVelocity(float directionX)
+    {
+        return MoveSpeed * new Vector2(directionX, -GravityScale);
     }
 }

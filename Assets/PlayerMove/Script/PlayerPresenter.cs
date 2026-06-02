@@ -1,18 +1,19 @@
-﻿using UnityEngine;
+using UnityEngine;
+
 public class PlayerPresenter
 {
-    private PlayerModel _playermodel;
+    private PlayerModel _playerModel;
 
     public PlayerPresenter(PlayerModel model)
     {
-        _playermodel = model;
+        _playerModel = model;
     }
 
     /// <summary>
-    /// ViewからX方向を受け取り、Velocityを計算させて返す
+    /// ViewからX方向を受け取り、Modelに速度計算を委譲して返す
     /// </summary>
     public Vector2 GetMovementVelocity(float directionX)
     {
-        return _playermodel.MoveSpeed * new Vector2(directionX, -_playermodel.GravityScale);
+        return _playerModel.CalcVelocity(directionX);
     }
 }
