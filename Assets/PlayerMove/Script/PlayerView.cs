@@ -3,11 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerView : MonoBehaviour
 {
-    [Header("移動速度")]
-    [SerializeField] private float _moveSpeed = 10f;
-    [Header("重力")]
-    [SerializeField] private float _gravityScale = 1f;
-
     [Header("ライトオブジェクト")]
     [SerializeField] private GameObject _playerLights;
 
@@ -15,24 +10,17 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private float _lightRotateThreshold = 0.1f;
 
     private Rigidbody2D _rb;
-    private PlayerModel _playerModel;
     private PlayerPresenter _playerPresenter;
 
     private Vector2 _mouseWorldPos;
 
-    private void Awake()
-    {
-        Init();
-        _rb = GetComponent<Rigidbody2D>();
-    }
-
     /// <summary>
-    /// ModelとPresenterを初期化する
+    /// GameRootから呼ばれる初期化メソッド。PresenterをViewに注入する。
     /// </summary>
-    private void Init()
+    public void Initialize(PlayerPresenter presenter)
     {
-        _playerModel = new PlayerModel(_moveSpeed, _gravityScale);
-        _playerPresenter = new PlayerPresenter(_playerModel);
+        _playerPresenter = presenter;
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
